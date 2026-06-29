@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>中荷人寿河南省分公司 · 十九周年庆</title>
+  <link rel="preconnect" href="https://fonts.googleapis.cn">
+  <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
+  <link href="https://fonts.googleapis.cn/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* ========== Reset & Variables ========== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --red: #C41E3A;
+      --red-deep: #9A1830;
+      --gold: #D4A849;
+      --gold-light: #F0D68A;
+      --gold-dark: #A8832E;
+      --bg: #0B1426;
+      --bg-light: #121E36;
+      --pink: #F2C4CE;
+      --warm-white: #FFF8F0;
+      --font-title: 'Noto Serif SC', 'Songti SC', serif;
+      --font-body: 'Noto Sans SC', 'PingFang SC', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--warm-white);
+      overflow-x: hidden;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ========== Particles Canvas ========== */
+    #particleCanvas {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 1;
+    }
+
+    /* ========== Page Structure ========== */
+    .page { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+    /* ========== Header ========== */
+    .header {
+      text-align: center; padding: 48px 24px 16px; position: relative;
+    }
+    .header::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 120px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .brand-en {
+      font-family: var(--font-body); font-size: 13px; letter-spacing: 6px;
+      color: var(--gold); text-transform: uppercase; margin-bottom: 12px; font-weight: 500;
+    }
+    .brand-cn {
+      font-family: var(--font-title); font-size: clamp(28px, 5vw, 42px);
+      font-weight: 900; color: var(--gold-light);
+      text-shadow: 0 0 40px rgba(212,168,73,0.3);
+      margin-bottom: 8px; letter-spacing: 4px;
+    }
+    .brand-sub {
+      font-family: var(--font-title); font-size: clamp(16px, 3vw, 22px);
+      font-weight: 600; color: var(--pink); margin-bottom: 6px; letter-spacing: 2px;
+    }
+    .brand-date {
+      font-size: 13px; color: rgba(255,248,240,0.5); margin-top: 8px; letter-spacing: 1px;
+    }
+
+    /* ========== Intro Section ========== */
+    .intro {
+      max-width: 720px; padding: 24px 24px 8px; text-align: center;
+      font-size: 14px; line-height: 2; color: rgba(255,248,240,0.75);
+    }
+    .intro em {
+      font-style: normal; color: var(--gold-light); font-weight: 500;
+    }
+
+    /* ========== Wheel Section ========== */
+    .wheel-section {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 24px 16px 40px; position: relative; width: 100%;
+    }
+    .wheel-hint {
+      font-family: var(--font-title); font-size: 15px; color: var(--gold);
+      letter-spacing: 3px; margin-bottom: 20px;
+      animation: hintPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .wheel-outer {
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Glow ring around wheel */
+    .wheel-glow {
+      position: absolute; width: calc(100% + 40px); height: calc(100% + 40px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,168,73,0.15) 0%, transparent 70%);
+      animation: glowPulse 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes glowPulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.06); opacity: 1; }
+    }
+
+    /* Pointer */
+    .pointer {
+      position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+      z-index: 20; width: 0; height: 0;
+      border-left: 16px solid transparent; border-right: 16px solid transparent;
+      border-top: 30px solid var(--gold);
+      filter: drop-shadow(0 2px 8px rgba(212,168,73,0.6));
+    }
+    .pointer::after {
+      content: ''; position: absolute; top: -34px; left: -8px;
+      width: 0; height: 0;
+      border-left: 8px solid transparent; border-right: 8px solid transparent;
+      border-top: 16px solid var(--gold-light);
+    }
+
+    /* Wheel container that rotates */
+    .wheel-wrapper {
+      width: clamp(300px, 75vw, 480px); height: clamp(300px, 75vw, 480px);
+      position: relative; border-radius: 50%;
+      transition: transform 4s cubic-bezier(0.17, 0.67, 0.08, 0.98);
+      will-change: transform;
+    }
+    .wheel-wrapper.spinning {
+      transition: transform 5s cubic-bezier(0.12, 0.7, 0.06, 0.98);
+    }
+    .wheel-wrapper canvas {
+      width: 100%; height: 100%; border-radius: 50%;
+    }
+
+    /* Center hub */
+    .wheel-center {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 80px; height: 80px; border-radius: 50%; z-index: 10;
+      background: radial-gradient(circle at 35% 35%, var(--gold-light), var(--gold-dark));
+      box-shadow: 0 0 30px rgba(212,168,73,0.5), inset 0 2px 4px rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; cursor: pointer;
+    }
+    .wheel-center-text {
+      font-family: var(--font-title); font-size: 16px; font-weight: 900;
+      color: var(--red-deep); line-height: 1.2; text-align: center;
+    }
+    .wheel-center-text small { font-size: 10px; font-weight: 600; display: block; }
+
+    /* Spin button */
+    .spin-btn {
+      margin-top: 28px; padding: 14px 48px;
+      font-family: var(--font-title); font-size: 16px; font-weight: 700;
+      color: var(--bg); letter-spacing: 3px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      border: none; border-radius: 50px; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(212,168,73,0.4);
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .spin-btn:hover {
+      transform: translateY(-2px); box-shadow: 0 6px 30px rgba(212,168,73,0.6);
+    }
+    .spin-btn:active { transform: translateY(0); }
+    .spin-btn:disabled {
+      opacity: 0.5; cursor: not-allowed; transform: none;
+      box-shadow: 0 2px 10px rgba(212,168,73,0.2);
+    }
+    .spin-btn::after {
+      content: ''; position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+      animation: btnShine 3s ease-in-out infinite;
+    }
+    @keyframes btnShine {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      30%, 100% { transform: translateX(100%) rotate(45deg); }
+    }
+
+    /* ========== Overlay & Content Card ========== */
+    .overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(11,20,38,0.85); backdrop-filter: blur(8px);
+      z-index: 100; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease; padding: 24px;
+    }
+    .overlay.active { opacity: 1; pointer-events: auto; }
+
+    .content-card {
+      background: var(--warm-white); border-radius: 16px; padding: 36px 32px;
+      max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;
+      color: #2A1A1A; position: relative;
+      transform: translateY(60px); opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .overlay.active .content-card { transform: translateY(0); opacity: 1; }
+
+    .content-card::-webkit-scrollbar { width: 4px; }
+    .content-card::-webkit-scrollbar-track { background: transparent; }
+    .content-card::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+    .card-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+      padding-bottom: 16px; border-bottom: 2px solid var(--gold);
+    }
+    .card-icon {
+      width: 48px; height: 48px; border-radius: 12px; display: flex;
+      align-items: center; justify-content: center; font-size: 24px;
+      background: linear-gradient(135deg, var(--red), var(--red-deep));
+      color: var(--gold-light); flex-shrink: 0;
+    }
+    .card-title {
+      font-family: var(--font-title); font-size: 22px; font-weight: 700;
+      color: var(--red); line-height: 1.3;
+    }
+    .card-subtitle {
+      font-size: 13px; color: var(--gold-dark); margin-top: 2px;
+    }
+
+    .card-body { font-size: 15px; line-height: 2; color: #3A2A2A; }
+    .card-body p { margin-bottom: 14px; text-indent: 2em; }
+    .card-body p:last-child { margin-bottom: 0; }
+    .card-body .highlight {
+      color: var(--red); font-weight: 600;
+    }
+    .card-body .stat {
+      display: inline-block; background: linear-gradient(135deg, #FFF5E6, #FFE8C8);
+      padding: 2px 10px; border-radius: 6px; font-weight: 700;
+      color: var(--red-deep); font-size: 14px; margin: 0 2px;
+      border: 1px solid rgba(212,168,73,0.3);
+    }
+
+    .close-btn {
+      position: absolute; top: 16px; right: 16px; width: 36px; height: 36px;
+      border-radius: 50%; border: 2px solid rgba(196,30,58,0.2);
+      background: transparent; color: var(--red); font-size: 20px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease; line-height: 1;
+    }
+    .close-btn:hover {
+      background: var(--red); color: white; border-color: var(--red);
+    }
+
+    /* ========== Segment Legend ========== */
+    .legend {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+      max-width: 600px; width: 100%; padding: 0 16px 40px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px; padding: 8px 10px;
+      background: rgba(255,248,240,0.05); border-radius: 8px;
+      border: 1px solid rgba(212,168,73,0.15); cursor: pointer;
+      transition: all 0.3s ease; font-size: 12px;
+    }
+    .legend-item:hover {
+      background: rgba(212,168,73,0.12); border-color: var(--gold);
+      transform: translateY(-1px);
+    }
+    .legend-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .legend-dot.red { background: var(--red); }
+    .legend-dot.gold { background: var(--gold); }
+
+    /* ========== Footer ========== */
+    .footer {
+      text-align: center; padding: 24px; font-size: 12px;
+      color: rgba(255,248,240,0.3); border-top: 1px solid rgba(212,168,73,0.1);
+      width: 100%; margin-top: auto;
+    }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 640px) {
+      .header { padding: 32px 16px 12px; }
+      .brand-en { font-size: 11px; letter-spacing: 4px; }
+      .intro { font-size: 13px; padding: 16px 16px 4px; }
+      .wheel-center { width: 60px; height: 60px; }
+      .wheel-center-text { font-size: 13px; }
+      .wheel-center-text small { font-size: 8px; }
+      .spin-btn { padding: 12px 36px; font-size: 14px; }
+      .content-card { padding: 28px 20px; }
+      .card-title { font-size: 18px; }
+      .card-body { font-size: 14px; }
+      .legend { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .pointer { top: -14px; border-left-width: 12px; border-right-width: 12px; border-top-width: 24px; }
+      .pointer::after { top: -28px; border-left-width: 6px; border-right-width: 6px; border-top-width: 12px; }
+    }
+
+    /* ========== Selection indicator ========== */
+    .segment-active {
+      animation: segmentGlow 1.5s ease-in-out infinite;
+    }
+    @keyframes segmentGlow {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.3); }
+    }
+
+    /* ========== Lotus decorative SVG ========== */
+    .lotus-deco {
+      position: fixed; pointer-events: none; z-index: 0; opacity: 0.06;
+    }
+    .lotus-deco.left { left: -60px; top: 20%; width: 200px; transform: rotate(-15deg); }
+    .lotus-deco.right { right: -60px; bottom: 10%; width: 200px; transform: rotate(15deg); }
+  </style>
+</head>
+<body>
+  <!-- Petal particles -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Decorative lotus SVGs -->
+  <svg class="lotus-deco left" viewBox="0 0 120 120" fill="none">
+    <path d="M60 10 C60 10 80 40 80 60 C80 80 70 100 60 110 C50 100 40 80 40 60 C40 40 60 10 60 10Z" fill="#F2C4CE" opacity="0.5"/>
+    <path d="M30 40 C30 40 50 50 55 70 C45 75 25 65 20 55 C20 45 30 40 30 40Z" fill="#F2C4CE" opacity="0.4"/>
+    <path d="M90 40 C90 40 70 50 65 70 C75 75 95 65 100 55 C100 45 90 40 90 40Z" fill="#F2C4CE" opacity="0.4"/>
+  </svg>
+  <svg class="lotus-deco right" viewBox="0 0 120 120" fill="none">
+    <path d="M60 10 C60 10 80 40 80 60 C80 80 70 100 60 110 C50 100 40 80 40 60 C40 40 60 10 60 10Z" fill="#F2C4CE" opacity="0.5"/>
+    <path d="M30 40 C30 40 50 50 55 70 C45 75 25 65 20 55 C20 45 30 40 30 40Z" fill="#F2C4CE" opacity="0.4"/>
+    <path d="M90 40 C90 40 70 50 65 70 C75 75 95 65 100 55 C100 45 90 40 90 40Z" fill="#F2C4CE" opacity="0.4"/>
+  </svg>
+
+  <div class="page">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand-en">BOB-CARDIF LIFE</div>
+      <h1 class="brand-cn">中荷人寿</h1>
+      <div class="brand-sub">十九正韶华 · 创新向未来</div>
+      <div class="brand-date">河南省分公司十九周年庆 · 2026.06.25</div>
+    </header>
+
+    <!-- Intro -->
+    <section class="intro">
+      <em>"十九相伴，豫见美好"</em> — 十九年前，中荷人寿河南省分公司作为走出环渤海经济圈、进军中原地区的战略性第一步，在郑州扎根。十九年砥砺前行，从最初的蹒跚起步，到如今汇聚千余名优秀保险代理人，始终秉持<em>"客户至上"</em>的服务理念，将保险的温暖送达中原大地的千家万户。
+    </section>
+
+    <!-- Wheel -->
+    <section class="wheel-section">
+      <div class="wheel-hint">转动时光之轮 · 阅览奋斗篇章</div>
+      <div class="wheel-outer">
+        <div class="wheel-glow"></div>
+        <div class="pointer"></div>
+        <div class="wheel-wrapper" id="wheelWrapper">
+          <canvas id="wheelCanvas" width="960" height="960"></canvas>
+        </div>
+        <div class="wheel-center" id="wheelCenter">
+          <div class="wheel-center-text">十九<small>周年</small></div>
+        </div>
+      </div>
+      <button class="spin-btn" id="spinBtn">转动时光之轮</button>
+    </section>
+
+    <!-- Legend -->
+    <div class="legend" id="legend"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      中荷人寿保险有限公司河南省分公司 · 十九周年庆
+    </footer>
+  </div>
+
+  <!-- Content overlay -->
+  <div class="overlay" id="overlay">
+    <div class="content-card" id="contentCard">
+      <button class="close-btn" id="closeBtn">&times;</button>
+      <div class="card-header">
+        <div class="card-icon" id="cardIcon"></div>
+        <div>
+          <div class="card-title" id="cardTitle"></div>
+          <div class="card-subtitle" id="cardSubtitle"></div>
+        </div>
+      </div>
+      <div class="card-body" id="cardBody"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ========== Segment Data ========== */
+    const segments = [
+      {
+        label: '砥砺前行',
+        icon: '🏛',
+        subtitle: '扎根中原十九年',
+        color: 'red',
+        body: `<p>2026年6月25日，中荷人寿河南省分公司迎来成立十九周年，以<span class="highlight">"十九相伴，豫见美好"</span>为主题的十九周年庆正式拉开帷幕。</p>
+<p>十九年前，中荷人寿河南省分公司作为中荷人寿保险有限公司走出环渤海经济圈、进军中原地区的战略性第一步，在郑州扎根。十九年砥砺前行，从最初的蹒跚起步，到如今拥有郑州、洛阳、焦作、安阳、南阳五家中心支公司和三家营销服务部，汇聚<span class="stat">千余名</span>优秀保险代理人，始终秉持"客户至上"的服务理念，将保险的温暖送达中原大地的千家万户。</p>`
+      },
+      {
+        label: '经营底盘',
+        icon: '📊',
+        subtitle: '专业力量熠熠生辉',
+        color: 'gold',
+        body: `<p>十九年来，分公司以高质量党建为引领，将党建与公司治理、业务经营、风险防控深度融合，以<span class="highlight">"诚信、担当、创新、共赢"</span>的核心价值观为坐标，夯实发展底盘，各业务渠道齐头并进。</p>
+<p>个险渠道创新场景化营销服务，推出<span class="stat">"中荷创享家"</span>品牌，落地"共创共好 共享未来"人才发展理念；银保渠道新签约浦发、民生、华夏、双邮等合作银行，合作版图持续扩大；经代渠道实现从"一司一策"到"一人一策"的精准化营销服务；团险渠道深化个团协同，打开企业服务新空间。</p>
+<p>人才是公司发展的根基。分公司以<span class="highlight">"军队纪律、学校成长、球队协作、家庭温暖"</span>的组织文化为牵引，系统性推进人才梯队建设，让这支专业、敬业、有温度的队伍，书写了分公司稳步向上的奋进答卷。</p>`
+      },
+      {
+        label: '科技赋能',
+        icon: '💡',
+        subtitle: '打造智慧服务新体验',
+        color: 'red',
+        body: `<p>在数字化转型浪潮中，分公司积极拥抱科技变革，持续推进服务创新。依托中荷人寿<span class="stat">"金融知识云展厅"</span>，运用VR技术打造沉浸式金融教育平台，让客户足不出户即可学习金融保险知识。</p>
+<p>同时，通过"中荷人寿"服务号、智能语音机器人<span class="stat">"小荷"</span>等数字化工具，实现人机交互、智能应答，让服务触手可及，用<span class="highlight">"暖、快、简"</span>的服务方式兑现每一份承诺。</p>
+<p>在客户服务体验方面，分公司全面推行便民举措，清理非必要证明事项，在营业网点设置服务指引，让客户办事"少跑路、更省心"。合规经营方面，分公司持续开展合规文化宣传月，组织<span class="stat">"践行合规 固本行远"</span>合规知识测试，在稳健经营底线上稳步前行，以高质量党建引领分公司行稳致远。</p>`
+      },
+      {
+        label: '便民服务',
+        icon: '🤝',
+        subtitle: '关爱每一个群体',
+        color: 'gold',
+        body: `<p>分公司打造差异化便民服务体系，在全省网点设立便民服务专区，配备轮椅、老花镜、放大镜、医药箱、导盲杖等设施，开通听障客户书写办理通道；对行动不便者提供上门服务，让特殊群体办事<span class="highlight">"零障碍"</span>。</p>
+<p>开设爱心服务窗口，为老年人、现役及退役军人、军属以及特殊人群等提供优先服务；全网点设置中英双语提示牌，配备专业翻译器，让外籍人员享受便捷金融服务。</p>
+<p>围绕老年人日常生活场景提供适老化改造评估和智能养老解决方案。持续开展<span class="stat">"睡眠保单"</span>清理工作，主动寻找、服务老客户，不让任何一份托付被遗忘；持续推进重疾住院期间快速理赔，在客户最需要帮助的时刻第一时间伸出援手。</p>
+<p>开展<span class="stat">"消保星推官"</span>活动，以创新形式传播"大消保"理念。2025年监管消保评价得分<span class="stat">83.2分</span>，评级二级B，全省排名第6，连续三年稳步提升。</p>`
+      },
+      {
+        label: '温暖理赔',
+        icon: '🛡',
+        subtitle: '让保障更有温度',
+        color: 'red',
+        body: `<p>理赔是保险价值兑现的关键时刻。2025年，分公司交出了一份充满温度的服务答卷：全年处理理赔案件<span class="stat">1.7万件</span>，赔付总金额高达<span class="stat">1.46亿元</span>。理赔申请支付时效仅为<span class="stat">1.22天</span>，出险支付时效为<span class="stat">45.71天</span>，以行业领先的效率守护客户权益。</p>
+<p>凭借扎实的服务数据与客户真切的口碑，分公司荣膺<span class="highlight">"2025年最受消费者好评的理赔服务机构"</span>。</p>
+<p>高效、温暖的理赔服务背后，是一个个鲜活的守护故事：为罹患重疾的客户在两年多时间里累计赔付三十余次、赔付总额近<span class="stat">26万元</span>，该案例入选"河南保险业典型赔案"；客户王先生罹患急性心梗，仅用一天即完成<span class="stat">30万元</span>重疾赔付并豁免后续14万余元保费；客户李先生突发重疾，仅<span class="stat">5小时</span>即完成41万元理赔款到账，客户含泪感慨<span class="highlight">"中荷人寿是我生命中的曙光"</span>。</p>`
+      },
+      {
+        label: '品牌公益',
+        icon: '🌟',
+        subtitle: '声量持续扩大 · 步履不停',
+        color: 'gold',
+        body: `<p>分公司在郑州、洛阳两地共<span class="stat">5家高端影院</span>的<span class="stat">41个影厅</span>投放温情广告，通过极具视觉冲击力和情感共鸣的短片，向中原消费者深度传递品牌价值与<span class="highlight">"稳健规划，共享成长"</span>的品牌理念。</p>
+<p>在郑州国贸360、正弘城等商圈公交候车亭刊发公司主题形象海报，依托花园路城市动脉日均巨大流量，让品牌"走上街头、融入生活"。高管受邀走进大象新闻品牌栏目《财经TALK》，直播浏览量突破<span class="stat">10万+</span>。</p>
+<p>取之于斯，反哺于斯。2025年，分公司开展公益活动累计服务<span class="stat">千余人次</span>，形成<span class="stat">"星光计划"</span><span class="stat">"乡村振兴助力计划"</span><span class="stat">"暖冬行动"</span>等系统化公益矩阵。<span class="stat">"保蓓公益行"</span>志愿者队伍先后走进洛阳、登封等多所乡村学校，河南省红十字会专程致信感谢，盛赞分公司的"真诚与创新"。</p>`
+      },
+      {
+        label: '金融教育',
+        icon: '📖',
+        subtitle: '守护百姓"钱袋子"',
+        color: 'red',
+        body: `<p>分公司构建<span class="highlight">"阵地化 + 场景化 + 线上化"</span>金融教育体系，在全省<span class="stat">9个网点</span>打造"金融知识加油站"。2025年，深入农村、社区、学校、企业、商圈开展"保险五进入"活动，聚焦"一老一少一新"群体。</p>
+<p>精心策划<span class="stat">"荷您说风险"</span>系列原创金融风险提示短剧，以生动剧情传递金融知识。</p>
+<p>在郑东新区生命科学园，联合多家金融单位开展"保障金融权益 助力美好生活"主题宣传，为老年群体打造沉浸式反诈体验。在郑州新世界百货、熙地港、金融岛等商圈，分公司领导班子化身"金融讲师"，结合热映影片剧情剖析"高息理财""代理退保"等骗局特征，让金融知识如"爆米花"般融入日常生活。全年举办线下金融教育宣传<span class="stat">近百场</span>。</p>`
+      },
+      {
+        label: '职场焕新',
+        icon: '🏢',
+        subtitle: '筑梦新起点',
+        color: 'gold',
+        body: `<p>过去一年，洛阳中支、巩义营服职场搬迁升级，全新<span class="stat">2.0职场</span>亮相中原；分公司直播间正式投用，为数字化服务提供新阵地。</p>
+<p>目前，分公司新职场装修进入收尾阶段，郑州中支新址开工在即，登封营服改造正稳步推进。更好的环境，意味着更高的标准和更强的干劲。</p>
+<p><span class="highlight">十九正韶华，扬帆再出发。</span>站在十九周年的新起点上，中荷人寿河南省分公司将继续以热爱致初心、以实干赴远方，凝聚共识、脚踏实地，持续深耕中原大地，用科技提升服务效率，用温度守护每一份托付，用责任书写金融为民的生动答卷，为河南百姓的美好生活保驾护航。</p>`
+      }
+    ];
+
+    const SEG_COUNT = segments.length;
+    const SEG_ANGLE = 360 / SEG_COUNT; // 45 degrees
+
+    /* ========== Draw Wheel ========== */
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const SIZE = 960;
+    const CENTER = SIZE / 2;
+    const RADIUS = SIZE / 2 - 20;
+
+    function drawWheel() {
+      ctx.clearRect(0, 0, SIZE, SIZE);
+
+      // Draw outer ring
+      ctx.beginPath();
+      ctx.arc(CENTER, CENTER, RADIUS + 8, 0, Math.PI * 2);
+      ctx.strokeStyle = '#D4A849';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      // Draw segments
+      for (let i = 0; i < SEG_COUNT; i++) {
+        const startAngle = (i * SEG_ANGLE - 90) * Math.PI / 180;
+        const endAngle = ((i + 1) * SEG_ANGLE - 90) * Math.PI / 180;
+        const isRed = segments[i].color === 'red';
+
+        // Segment fill
+        ctx.beginPath();
+        ctx.moveTo(CENTER, CENTER);
+        ctx.arc(CENTER, CENTER, RADIUS, startAngle, endAngle);
+        ctx.closePath();
+
+        // Gradient fill
+        const midAngle = ((i + 0.5) * SEG_ANGLE - 90) * Math.PI / 180;
+        const gx = CENTER + RADIUS * 0.5 * Math.cos(midAngle);
+        const gy = CENTER + RADIUS * 0.5 * Math.sin(midAngle);
+        const grad = ctx.createRadialGradient(CENTER, CENTER, 60, CENTER, CENTER, RADIUS);
+        if (isRed) {
+          grad.addColorStop(0, '#D4273F');
+          grad.addColorStop(1, '#9A1830');
+        } else {
+          grad.addColorStop(0, '#E8C35A');
+          grad.addColorStop(1, '#A8832E');
+        }
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Segment border
+        ctx.beginPath();
+        ctx.moveTo(CENTER, CENTER);
+        ctx.arc(CENTER, CENTER, RADIUS, startAngle, startAngle);
+        ctx.lineTo(CENTER + RADIUS * Math.cos(startAngle), CENTER + RADIUS * Math.sin(startAngle));
+        ctx.strokeStyle = 'rgba(255,248,240,0.2)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Draw segment text
+        ctx.save();
+        ctx.translate(CENTER, CENTER);
+        ctx.rotate(midAngle);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Icon
+        ctx.font = '32px sans-serif';
+        ctx.fillStyle = isRed ? '#F0D68A' : '#5A1A1A';
+        ctx.fillText(segments[i].icon, RADIUS * 0.58, 0);
+
+        // Label
+        ctx.font = '700 24px "Noto Serif SC", "Songti SC", serif';
+        ctx.fillStyle = isRed ? '#F0D68A' : '#7A1A1A';
+        const label = segments[i].label;
+        // Draw each character vertically
+        for (let c = 0; c < label.length; c++) {
+          ctx.fillText(label[c], RADIUS * 0.76, (c - (label.length - 1) / 2) * 30);
+        }
+
+        ctx.restore();
+      }
+
+      // Inner decorative ring
+      ctx.beginPath();
+      ctx.arc(CENTER, CENTER, 52, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(212,168,73,0.5)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Outer decorative dots
+      for (let i = 0; i < 32; i++) {
+        const angle = (i * 11.25) * Math.PI / 180;
+        const dotR = i % 4 === 0 ? 4 : 2;
+        ctx.beginPath();
+        ctx.arc(
+          CENTER + (RADIUS + 2) * Math.cos(angle),
+          CENTER + (RADIUS + 2) * Math.sin(angle),
+          dotR, 0, Math.PI * 2
+        );
+        ctx.fillStyle = i % 4 === 0 ? '#F0D68A' : 'rgba(240,214,138,0.4)';
+        ctx.fill();
+      }
+    }
+
+    drawWheel();
+
+    /* ========== Build Legend ========== */
+    const legendEl = document.getElementById('legend');
+    segments.forEach((seg, i) => {
+      const item = document.createElement('div');
+      item.className = 'legend-item';
+      item.innerHTML = `<span class="legend-dot ${seg.color}"></span><span>${seg.label}</span>`;
+      item.addEventListener('click', () => showContent(i));
+      legendEl.appendChild(item);
+    });
+
+    /* ========== Spin Logic ========== */
+    const wheelWrapper = document.getElementById('wheelWrapper');
+    const spinBtn = document.getElementById('spinBtn');
+    const wheelCenter = document.getElementById('wheelCenter');
+    let currentRotation = 0;
+    let isSpinning = false;
+
+    function spinWheel() {
+      if (isSpinning) return;
+      isSpinning = true;
+      spinBtn.disabled = true;
+
+      // Random 5-8 full rotations + random offset
+      const extraRotations = 5 + Math.floor(Math.random() * 4);
+      const targetSegment = Math.floor(Math.random() * SEG_COUNT);
+      // Calculate the angle so the pointer (at top, -90deg) points to the target segment
+      // Segment i center is at (i * 45 + 22.5) degrees from top
+      const targetAngle = 360 - (targetSegment * SEG_ANGLE + SEG_ANGLE / 2);
+      const totalRotation = extraRotations * 360 + targetAngle;
+      currentRotation += totalRotation;
+
+      wheelWrapper.classList.add('spinning');
+      wheelWrapper.style.transform = `rotate(${currentRotation}deg)`;
+
+      // After spin ends
+      const onEnd = () => {
+        isSpinning = false;
+        spinBtn.disabled = false;
+        wheelWrapper.classList.remove('spinning');
+        wheelWrapper.removeEventListener('transitionend', onEnd);
+        showContent(targetSegment);
+      };
+      wheelWrapper.addEventListener('transitionend', onEnd);
+    }
+
+    spinBtn.addEventListener('click', spinWheel);
+    wheelCenter.addEventListener('click', spinWheel);
+
+    /* ========== Content Display ========== */
+    const overlay = document.getElementById('overlay');
+    const cardTitle = document.getElementById('cardTitle');
+    const cardSubtitle = document.getElementById('cardSubtitle');
+    const cardIcon = document.getElementById('cardIcon');
+    const cardBody = document.getElementById('cardBody');
+    const closeBtn = document.getElementById('closeBtn');
+
+    function showContent(index) {
+      const seg = segments[index];
+      cardIcon.textContent = seg.icon;
+      cardTitle.textContent = seg.label;
+      cardSubtitle.textContent = seg.subtitle;
+      cardBody.innerHTML = seg.body;
+      overlay.classList.add('active');
+    }
+
+    function hideContent() {
+      overlay.classList.remove('active');
+    }
+
+    closeBtn.addEventListener('click', hideContent);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) hideContent();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') hideContent();
+    });
+
+    /* ========== Petal Particles ========== */
+    const pCanvas = document.getElementById('particleCanvas');
+    const pCtx = pCanvas.getContext('2d');
+    let petals = [];
+
+    function resizeParticleCanvas() {
+      pCanvas.width = window.innerWidth;
+      pCanvas.height = window.innerHeight;
+    }
+    resizeParticleCanvas();
+    window.addEventListener('resize', resizeParticleCanvas);
+
+    class Petal {
+      constructor() {
+        this.reset();
+        this.y = Math.random() * pCanvas.height;
+      }
+      reset() {
+        this.x = Math.random() * pCanvas.width;
+        this.y = -20;
+        this.size = 4 + Math.random() * 8;
+        this.speedY = 0.3 + Math.random() * 0.8;
+        this.speedX = -0.2 + Math.random() * 0.4;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.02;
+        this.opacity = 0.15 + Math.random() * 0.25;
+        this.hue = Math.random() > 0.5 ? 350 : 40; // pink or gold
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX + Math.sin(this.y * 0.005) * 0.3;
+        this.rotation += this.rotSpeed;
+        if (this.y > pCanvas.height + 20) this.reset();
+      }
+      draw() {
+        pCtx.save();
+        pCtx.translate(this.x, this.y);
+        pCtx.rotate(this.rotation);
+        pCtx.globalAlpha = this.opacity;
+        pCtx.beginPath();
+        // Draw a petal shape
+        pCtx.moveTo(0, 0);
+        pCtx.bezierCurveTo(this.size * 0.5, -this.size, this.size, -this.size * 0.5, 0, this.size);
+        pCtx.bezierCurveTo(-this.size, -this.size * 0.5, -this.size * 0.5, -this.size, 0, 0);
+        if (this.hue === 350) {
+          pCtx.fillStyle = '#F2C4CE';
+        } else {
+          pCtx.fillStyle = '#F0D68A';
+        }
+        pCtx.fill();
+        pCtx.restore();
+      }
+    }
+
+    // Create petals
+    for (let i = 0; i < 35; i++) {
+      petals.push(new Petal());
+    }
+
+    function animatePetals() {
+      pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+      petals.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animatePetals);
+    }
+    animatePetals();
+  </script>
+</body>
+</html>
