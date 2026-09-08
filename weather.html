@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>天气查询</title>
   <style>
     :root {
@@ -136,34 +135,34 @@
 <body>
   <div class="card">
     <h1>天气查询</h1>
-    <p>输入城市名称，查询当前天气情况。示例：北京、上海、Shenzhen。</p>
+    <p style="position: relative;">输入城市名称，查询当前天气情况。</p>
 
     <div class="search">
-      <input id="cityInput" type="text" placeholder="请输入城市名" value="北京" />
+      <input id="cityInput" type="text" placeholder="请输入城市名" value="北京">
       <button id="searchButton" type="button">查询</button>
     </div>
 
-    <div class="status" id="status">准备查询...</div>
+    <div class="status" id="status">查询成功</div>
 
-    <div class="result" id="result">
-      <div class="city" id="cityName"></div>
-      <div class="weather" id="weatherText"></div>
+    <div class="result show" id="result">
+      <div class="city" id="cityName">北京，中国</div>
+      <div class="weather" id="weatherText">大部晴朗</div>
       <div class="meta">
         <div class="meta-item">
           <div class="label">当前温度</div>
-          <div class="value" id="temperature"></div>
+          <div class="value" id="temperature">21.9 °C</div>
         </div>
         <div class="meta-item">
           <div class="label">体感/湿度</div>
-          <div class="value" id="humidity"></div>
+          <div class="value" id="humidity">42%</div>
         </div>
         <div class="meta-item">
           <div class="label">风速</div>
-          <div class="value" id="windSpeed"></div>
+          <div class="value" id="windSpeed">7 km/h</div>
         </div>
         <div class="meta-item">
           <div class="label">更新时间</div>
-          <div class="value" id="updateTime" style="font-size: 14px;"></div>
+          <div class="value" id="updateTime" style="font-size: 14px;">2026-09-08 17:15</div>
         </div>
       </div>
     </div>
@@ -254,5 +253,6 @@
 
     fetchWeather();
   </script>
-</body>
-</html>
+
+
+</body></html>
