@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>天气查询</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+      color: #0f172a;
+    }
+
+    .card {
+      width: min(92vw, 460px);
+      padding: 28px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.14);
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+    }
+
+    p {
+      margin: 0 0 18px;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    .search {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 0 18px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .status {
+      min-height: 24px;
+      margin-bottom: 14px;
+      color: #334155;
+    }
+
+    .result {
+      display: none;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .city {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .weather {
+      font-size: 18px;
+      margin-bottom: 14px;
+      color: #1d4ed8;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .meta-item {
+      padding: 12px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+    }
+
+    .label {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>天气查询</h1>
+    <p>输入城市名称，查询当前天气情况。示例：北京、上海、Shenzhen。</p>
+
+    <div class="search">
+      <input id="cityInput" type="text" placeholder="请输入城市名" value="北京" />
+      <button id="searchButton" type="button">查询</button>
+    </div>
+
+    <div class="status" id="status">准备查询...</div>
+
+    <div class="result" id="result">
+      <div class="city" id="cityName"></div>
+      <div class="weather" id="weatherText"></div>
+      <div class="meta">
+        <div class="meta-item">
+          <div class="label">当前温度</div>
+          <div class="value" id="temperature"></div>
+        </div>
+        <div class="meta-item">
+          <div class="label">体感/湿度</div>
+          <div class="value" id="humidity"></div>
+        </div>
+        <div class="meta-item">
+          <div class="label">风速</div>
+          <div class="value" id="windSpeed"></div>
+        </div>
+        <div class="meta-item">
+          <div class="label">更新时间</div>
+          <div class="value" id="updateTime" style="font-size: 14px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const resultEl = document.getElementById("result");
+    const cityInput = document.getElementById("cityInput");
+    const searchButton = document.getElementById("searchButton");
+
+    const weatherCodeMap = {
+      0: "晴朗",
+      1: "大部晴朗",
+      2: "局部多云",
+      3: "阴天",
+      45: "有雾",
+      48: "雾凇",
+      51: "小毛毛雨",
+      53: "毛毛雨",
+      55: "强毛毛雨",
+      61: "小雨",
+      63: "中雨",
+      65: "大雨",
+      71: "小雪",
+      73: "中雪",
+      75: "大雪",
+      80: "小阵雨",
+      81: "中阵雨",
+      82: "强阵雨",
+      95: "雷暴"
+    };
+
+    async function fetchWeather() {
+      const city = cityInput.value.trim();
+      if (!city) {
+        statusEl.textContent = "请输入城市名称";
+        resultEl.classList.remove("show");
+        return;
+      }
+
+      statusEl.textContent = "查询中...";
+      resultEl.classList.remove("show");
+
+      try {
+        const geoResponse = await fetch(
+          `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=zh&format=json`
+        );
+        const geoData = await geoResponse.json();
+
+        if (!geoData.results || !geoData.results.length) {
+          throw new Error("未找到该城市，请换个名称试试。");
+        }
+
+        const place = geoData.results[0];
+        const weatherResponse = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${place.latitude}&longitude=${place.longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto`
+        );
+        const weatherData = await weatherResponse.json();
+        const current = weatherData.current;
+
+        document.getElementById("cityName").textContent =
+          `${place.name}${place.country ? "，" + place.country : ""}`;
+        document.getElementById("weatherText").textContent =
+          weatherCodeMap[current.weather_code] || "天气未知";
+        document.getElementById("temperature").textContent =
+          `${current.temperature_2m} ${weatherData.current_units.temperature_2m}`;
+        document.getElementById("humidity").textContent =
+          `${current.relative_humidity_2m}${weatherData.current_units.relative_humidity_2m}`;
+        document.getElementById("windSpeed").textContent =
+          `${current.wind_speed_10m} ${weatherData.current_units.wind_speed_10m}`;
+        document.getElementById("updateTime").textContent = current.time.replace("T", " ");
+
+        resultEl.classList.add("show");
+        statusEl.textContent = "查询成功";
+      } catch (error) {
+        statusEl.textContent = error.message || "查询失败，请稍后重试。";
+        resultEl.classList.remove("show");
+      }
+    }
+
+    searchButton.addEventListener("click", fetchWeather);
+    cityInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        fetchWeather();
+      }
+    });
+
+    fetchWeather();
+  </script>
+</body>
+</html>
